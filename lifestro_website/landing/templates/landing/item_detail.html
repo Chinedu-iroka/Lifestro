@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ item.name }} | HAVELLE BY LIFESTRO</title>
+    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .detail-gallery {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .main-img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .side-imgs {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .side-img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .content-box {
+            background: #111;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid #222;
+        }
+
+        .video-container {
+            margin-top: 2rem;
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="main-nav">
+                <a href="{% url 'index' %}" class="logo">HAVELLE BY LIFESTRO</a>
+                <ul class="nav-links">
+                    <li><a href="{% url 'car_list' %}">Car Rentals</a></li>
+                    <li><a href="#">Boats</a></li>
+                    <li><a href="#">About Us</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <i class="far fa-heart"></i>
+                    <i class="far fa-user"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 4rem 0;">
+        <div class="detail-gallery">
+            {% if item.image %}
+            <img src="{{ item.image.url }}" class="main-img" alt="{{ item.name }}">
+            {% else %}
+            <div class="main-img"
+                style="background: #222; display: flex; align-items: center; justify-content: center; color: #444;">No
+                Preview Image</div>
+            {% endif %}
+            <div class="side-imgs">
+                {% for img in item.images.all|slice:":2" %}
+                <img src="{{ img.image.url }}" class="side-img" alt="{{ item.name }}">
+                {% empty %}
+                <!-- Placeholder if no extra images -->
+                <div
+                    style="background: #222; height: 100%; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #444;">
+                    No more images</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="grid" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem;">
+            <div class="content">
+                <h1 style="color: white; font-size: 2.5rem; margin-bottom: 0.5rem;">{{ item.name }}</h1>
+                <div style="color: var(--accent-gold); margin-bottom: 1.5rem;">
+                    <i class="fas fa-star"></i> {{ item.rating }} Rating
+                </div>
+                <div class="content-box">
+                    <h2 style="color: white; margin-bottom: 1rem;">Description</h2>
+                    <p style="color: #aaa; line-height: 1.8;">{{ item.description }}</p>
+                </div>
+
+                {% if youtube_id %}
+                <div class="video-section">
+                    <h2 style="color: white; margin-top: 2rem; margin-bottom: 1rem;">Experience the {{ item.name }}</h2>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/{{ youtube_id }}" frameborder="0"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+                {% elif item.video_url %}
+                <div class="video-section">
+                    <h2 style="color: white; margin-top: 2rem; margin-bottom: 1rem;">Experience the {{ item.name }}</h2>
+                    <p style="color: #666;">Video preview available at: <a href="{{ item.video_url }}" target="_blank"
+                            style="color: var(--accent-blue);">{{ item.video_url }}</a></p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="sidebar">
+                <div class="content-box" style="position: sticky; top: 2rem;">
+                    <h3 style="color: #aaa; margin-bottom: 0.5rem;">Rental Price</h3>
+                    <div style="font-size: 2rem; color: white; font-weight: bold; margin-bottom: 1.5rem;">
+                        ${{ item.price_per_day|floatformat:0 }} <span style="font-size: 1rem; color: #666;">/ DAY</span>
+                    </div>
+
+                    <form method="POST" action="{% url 'book_item' item.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-fill"
+                            style="width: 100%; padding: 1rem; font-weight: bold;">BOOK THIS ITEM</button>
+                    </form>
+
+                    <p style="color: #666; font-size: 0.8rem; margin-top: 1rem; text-align: center;">
+                        <i class="fas fa-shield-alt"></i> Secure checkout and flexible dates
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="padding: 2rem 0; background: #000; border-top: 1px solid #222; margin-top: 4rem;">
+        <div class="container">
+            <p style="color: #666; text-align: center;">&copy; 2026 HAVELLE BY LIFESTRO. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

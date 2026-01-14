@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFESTRO | Luxury Car Rentals</title>
+    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="top-nav">
+            <div class="container">
+                <div class="top-nav-content">
+                    <div class="journey-text">JOURNEY TO EXTRAORDINARY</div>
+                    <div class="follow-us">FOLLOW US</div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <nav class="main-nav">
+                <a href="{% url 'index' %}" class="logo">HAVELLE BY LIFESTRO</a>
+                <ul class="nav-links">
+                    <li><a href="#" style="color: var(--accent-blue);">Boats</a></li>
+                    <li><a href="#">Flights</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Experiences</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <i class="far fa-heart"></i>
+                    <i class="far fa-user"></i>
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container" style="padding: 4rem 0;">
+            <h1 style="color: white; margin-bottom: 2rem;">Luxury Car Fleet</h1>
+
+            <div class="items-grid">
+                {% for car in cars %}
+                <div class="item-card">
+                    <div class="item-overlay">
+                        <span class="tag">AVAILABLE</span>
+                        <i class="far fa-heart heart-icon"></i>
+                    </div>
+                    {% if car.image %}
+                    <img src="{{ car.image.url }}" alt="{{ car.name }}">
+                    {% else %}
+                    <div
+                        style="height: 200px; background: #222; display: flex; align-items: center; justify-content: center; color: #444;">
+                        No Image</div>
+                    {% endif %}
+                    <div class="item-details">
+                        <h3>{{ car.name }}</h3>
+                        <p>{{ car.description|truncatewords:20 }}</p>
+                    </div>
+                    <div class="item-info">
+                        <span class="price">${{ car.price_per_day|floatformat:0 }}/DAY</span>
+                        <span class="rating"><i class="fas fa-star"></i> {{ car.rating }}</span>
+                    </div>
+                    <div class="item-actions" style="padding: 0 1rem 1rem; display: flex; gap: 0.5rem;">
+                        <a href="{% url 'item_detail' car.id %}" class="btn-outline"
+                            style="flex: 1; text-align: center; font-size: 0.8rem; padding: 0.5rem;">MORE DETAILS</a>
+                        <form method="POST" action="{% url 'book_item' car.id %}" style="flex: 1;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-fill"
+                                style="width: 100%; border-radius: 4px; padding: 0.5rem; font-size: 0.8rem;">BOOK
+                                NOW</button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="color: white;">No cars available at the moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="padding: 2rem 0; background: #000; border-top: 1px solid #222; margin-top: 4rem;">
+        <div class="container">
+            <p style="color: #666; text-align: center;">&copy; 2026 HAVELLE BY LIFESTRO. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
