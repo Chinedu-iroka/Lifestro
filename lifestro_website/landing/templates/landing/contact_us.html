@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFESTRO | Contact Us</title>
+    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="main-nav">
+                <a href="{% url 'index' %}" class="logo">HAVELLE BY LIFESTRO</a>
+                <ul class="nav-links">
+                    <li><a href="{% url 'hotel_list' %}">Hotels</a></li>
+                    <li><a href="{% url 'jet_list' %}">Private Jets</a></li>
+                    <li><a href="{% url 'apartment_list' %}">Apartments</a></li>
+                    <li><a href="{% url 'boat_list' %}">Boats</a></li>
+                    <li><a href="{% url 'car_list' %}">Cars</a></li>
+                    <li><a href="{% url 'about_us' %}">About Us</a></li>
+                    <li><a href="{% url 'contact_us' %}" style="color: var(--accent-gold);">Contact Us</a></li>
+                    <li><a href="{% url 'partner_with_us' %}">Partner With Us</a></li>
+                    <li><a href="{% url 'register' %}" class="btn-outline"
+                            style="padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.8rem;">REGISTER</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <i class="far fa-heart"></i>
+                    <i class="far fa-user"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container"
+        style="padding: 4rem 0; min-height: 60vh; display: flex; flex-direction: column; align-items: center;">
+        <h1 style="color: white; margin-bottom: 2rem;">Contact Lifestro</h1>
+
+        <div
+            style="background: rgba(255,255,255,0.05); padding: 4rem; border-radius: 8px; width: 100%; max-width: 1000px;">
+            {% if success %}
+            <div
+                style="background: rgba(46, 204, 113, 0.2); border: 1px solid #2ecc71; padding: 1rem; border-radius: 4px; color: #2ecc71; margin-bottom: 1.5rem; text-align: center;">
+                Thank you! Your message has been sent successfully.
+            </div>
+            {% endif %}
+
+            <form method="POST" class="contact-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.name }}
+                </div>
+                <div class="form-group">
+                    {{ form.email }}
+                </div>
+                <div class="form-group">
+                    {{ form.comment }}
+                </div>
+                <button type="submit" class="btn-fill"
+                    style="padding: 1.2rem; font-size: 1.1rem; font-weight: 700; letter-spacing: 2px; margin-top: 1rem;">SEND
+                    MESSAGE</button>
+            </form>
+
+            <div style="margin-top: 2rem; border-top: 1px solid #333; padding-top: 2rem; text-align: center;">
+                <p style="color: #ccc; margin-bottom: 1.5rem;">Or reach us directly:</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <a href="https://wa.me/1234567890" target="_blank" class="btn-outline"
+                        style="display: flex; align-items: center; gap: 0.5rem; border-color: #25D366; color: #25D366;">
+                        <i class="fab fa-whatsapp fa-lg"></i> WhatsApp
+                    </a>
+                    <a href="mailto:concierge@lifestro.com" class="btn-outline"
+                        style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="far fa-envelope fa-lg"></i> Email Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="padding: 2rem 0; background: #000; border-top: 1px solid #222; margin-top: 4rem;">
+        <div class="container text-center">
+            <p style="color: #666;">&copy; 2026 HAVELLE BY LIFESTRO. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

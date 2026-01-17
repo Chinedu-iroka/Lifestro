@@ -68,9 +68,15 @@
             <nav class="main-nav">
                 <a href="{% url 'index' %}" class="logo">HAVELLE BY LIFESTRO</a>
                 <ul class="nav-links">
-                    <li><a href="{% url 'car_list' %}">Car Rentals</a></li>
-                    <li><a href="#">Boats</a></li>
-                    <li><a href="#">About Us</a></li>
+                    <li><a href="{% url 'car_list' %}">Cars</a></li>
+                    <li><a href="{% url 'boat_list' %}">Boats</a></li>
+                    <li><a href="{% url 'apartment_list' %}">Apartments</a></li>
+                    <li><a href="{% url 'jet_list' %}">Private Jets</a></li>
+                    <li><a href="{% url 'hotel_list' %}">Hotels</a></li>
+                    <li><a href="{% url 'car_list' %}">Cars</a></li>
+                    <li><a href="{% url 'about_us' %}">About Us</a></li>
+                    <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
+                    <li><a href="{% url 'partner_with_us' %}">Partner With Us</a></li>
                 </ul>
                 <div class="nav-icons">
                     <i class="far fa-heart"></i>
@@ -133,7 +139,7 @@
                 <div class="content-box" style="position: sticky; top: 2rem;">
                     <h3 style="color: #aaa; margin-bottom: 0.5rem;">Rental Price</h3>
                     <div style="font-size: 2rem; color: white; font-weight: bold; margin-bottom: 1.5rem;">
-                        ${{ item.price_per_day|floatformat:0 }} <span style="font-size: 1rem; color: #666;">/ DAY</span>
+                        ₦{{ item.price_per_day|floatformat:0 }} <span style="font-size: 1rem; color: #666;">/ DAY</span>
                     </div>
 
                     <form method="POST" action="{% url 'book_item' item.id %}">

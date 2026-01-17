@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, RentalItem, Booking, RentalImage
+from .models import Category, RentalItem, Booking, RentalImage, UserProfile
 
 class RentalImageInline(admin.TabularInline):
     model = RentalImage
@@ -20,3 +20,7 @@ class RentalItemAdmin(admin.ModelAdmin):
 class BookingAdmin(admin.ModelAdmin):
     list_display = ('user', 'item', 'start_date', 'end_date')
     list_filter = ('start_date', 'end_date')
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone_number', 'date_of_birth')
+    search_fields = ('user__username', 'phone_number')

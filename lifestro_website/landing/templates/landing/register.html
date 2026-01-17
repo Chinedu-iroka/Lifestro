@@ -1,0 +1,291 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REGISTER | HAVELLE BY LIFESTRO</title>
+    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+            url('{% static "landing/images/hero-bg.png" %}');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .register-card {
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .register-header h1 {
+            color: var(--accent-gold);
+            font-size: 2.5rem;
+            letter-spacing: 4px;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .register-header p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            color: var(--accent-gold);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .auth-input {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(50, 50, 50, 0.9);
+        }
+
+        .photo-upload {
+            border: 2px dashed rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .photo-upload:hover {
+            border-color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .submit-btn {
+            background: var(--accent-gold);
+            color: black;
+            border: none;
+            padding: 1.25rem;
+            border-radius: 4px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background: #f1c40f;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .login-link a {
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .error-messages {
+            margin-bottom: 2rem;
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #ff9f96;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+
+            .register-card {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <div style="margin-bottom: 2rem;">
+                <a href="{% url 'index' %}"
+                    style="color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; letter-spacing: 1px; display: inline-flex; align-items: center;">
+                    <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i> BACK TO HOMEPAGE
+                </a>
+            </div>
+            <div class="register-header">
+                <h1>LIFESTRO</h1>
+                <p>JOIN THE JOURNEY TO EXTRAORDINARY</p>
+            </div>
+
+            {% if messages %}
+            <div class="error-messages">
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                <div class="alert-error">
+                    <i class="fas fa-exclamation-circle" style="margin-right: 0.5rem;"></i> {{ message }}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <!-- Account Info -->
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        {{ form.email }}
+                    </div>
+
+                    <!-- Personal Info -->
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        {{ form.last_name }}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        {{ form.phone_number }}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date of Birth</label>
+                        {{ form.date_of_birth }}
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Full Address</label>
+                        {{ form.address }}
+                    </div>
+
+                    <!-- Passwords -->
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        {{ form.password }}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        {{ form.confirm_password }}
+                    </div>
+
+                    <!-- Photo -->
+                    <div class="form-group full-width">
+                        <label class="form-label">Face Verification Photo</label>
+                        <div class="photo-upload"
+                            onclick="document.getElementById('{{ form.face_photo.id_for_label }}').click()">
+                            <i class="fas fa-camera fa-2x" style="color: var(--accent-gold); margin-bottom: 1rem;"></i>
+                            <p style="color: var(--text-secondary); font-size: 0.8rem;">Click to upload your face photo
+                            </p>
+                            <input type="file" name="face_photo" id="{{ form.face_photo.id_for_label }}"
+                                style="display: none;" accept="image/*">
+                            <p id="file-name"
+                                style="margin-top: 0.5rem; color: var(--accent-gold); font-size: 0.8rem; display: none;">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">CREATE EXTRAORDINARY ACCOUNT</button>
+
+                <div class="login-link">
+                    Already have an account? <a href="{% url 'index' %}">LOGIN HERE</a>
+                </div>
+                <div class="login-link" style="margin-top: 1rem;">
+                    <a href="{% url 'index' %}"
+                        style="color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; letter-spacing: 1px;">
+                        <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i> BACK TO HOMEPAGE
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('{{ form.face_photo.id_for_label }}').addEventListener('change', function (e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : '';
+            const fileNameDisplay = document.getElementById('file-name');
+            if (fileName) {
+                fileNameDisplay.textContent = 'Selected: ' + fileName;
+                fileNameDisplay.style.display = 'block';
+            } else {
+                fileNameDisplay.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>

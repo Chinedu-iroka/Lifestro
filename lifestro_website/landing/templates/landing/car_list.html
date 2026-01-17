@@ -24,9 +24,13 @@
             <nav class="main-nav">
                 <a href="{% url 'index' %}" class="logo">HAVELLE BY LIFESTRO</a>
                 <ul class="nav-links">
-                    <li><a href="#" style="color: var(--accent-blue);">Boats</a></li>
-                    <li><a href="#">Flights</a></li>
-                    <li><a href="#">About Us</a></li>
+                    <li><a href="{% url 'boat_list' %}">Boats</a></li>
+                    <li><a href="{% url 'apartment_list' %}">Apartments</a></li>
+                    <li><a href="{% url 'jet_list' %}">Private Jets</a></li>
+                    <li><a href="{% url 'hotel_list' %}">Hotels</a></li>
+                    <li><a href="{% url 'about_us' %}">About Us</a></li>
+                    <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
+                    <li><a href="{% url 'partner_with_us' %}">Partner With Us</a></li>
                     <li><a href="#">Experiences</a></li>
                 </ul>
                 <div class="nav-icons">
@@ -61,7 +65,7 @@
                         <p>{{ car.description|truncatewords:20 }}</p>
                     </div>
                     <div class="item-info">
-                        <span class="price">${{ car.price_per_day|floatformat:0 }}/DAY</span>
+                        <span class="price">₦{{ car.price_per_day|floatformat:0 }}/DAY</span>
                         <span class="rating"><i class="fas fa-star"></i> {{ car.rating }}</span>
                     </div>
                     <div class="item-actions" style="padding: 0 1rem 1rem; display: flex; gap: 0.5rem;">

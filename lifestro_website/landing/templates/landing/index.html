@@ -8,6 +8,44 @@
     <title>LIFESTRO | Journey to Extraordinary</title>
     <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Inline Collage Styles to bypass cache */
+        .hero {
+            background: #000 !important;
+        }
+
+        .hero-bg-collage {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            z-index: 0;
+        }
+
+        .collage-item {
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .item-apartment {
+            background-image: url('{% static "landing/images/ocean-view-villa.png" %}');
+        }
+
+        .item-car {
+            background-image: url('{% static "landing/images/sports-car.png" %}');
+        }
+
+        /* Using villa as placeholder for boat */
+        .item-boat {
+            background-image: url('{% static "landing/images/ocean-view-villa.png" %}');
+        }
+
+        .item-jet {
+            background-image: url('{% static "landing/images/hero.png" %}');
+        }
+    </style>
 </head>
 
 <body>
@@ -15,16 +53,24 @@
     <header>
         <div class="top-bar">
             <span class="logo">Journey to Extraordinary</span>
-            <span class="follow">FOLLOW US</span>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-tiktok"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
         </div>
         <div class="container">
             <nav class="main-nav">
                 <div class="logo">HAVELLE BY LIFESTRO</div>
                 <ul class="nav-links">
-                    <li><a href="#" style="color: var(--accent-blue);">Boats</a></li>
-                    <li><a href="#">Flights</a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Experiences</a></li>
+                    <li><a href="{% url 'team_list' %}">Teams</a></li>
+                    <li><a href="{% url 'partners_list' %}">PARTNERS</a></li>
+                    <li><a href="{% url 'about_us' %}">About Us</a></li>
+                    <li><a href="{% url 'contact_us' %}" style="color: var(--accent-gold);">Contact Us</a></li>
+                    {% if user.is_authenticated and user.is_staff %}
+                    <li><a href="/admin/" class="btn-outline"
+                            style="padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.8rem;">ADMIN</a></li>
+                    {% endif %}
                 </ul>
                 <div class="nav-icons">
                     <i class="far fa-heart" style="margin-right: 1rem;"></i>
@@ -35,13 +81,11 @@
             <div class="sub-nav">
                 <a href="{% url 'car_list' %}"
                     style="background: var(--accent-gold); color: #000; padding: 0.2rem 1rem;">CAR RENTALS</a>
-                <a href="#">BOATS</a>
-                <a href="#">APARTMENTS</a>
-                <a href="#">PRIVATE JETS</a>
-                <a href="#">HOTELS</a>
-                <a href="#">ABOUT US</a>
-                <a href="#">CONTACT US</a>
-                <a href="#">PARTNER WITH US</a>
+                <a href="{% url 'boat_list' %}">BOATS</a>
+                <a href="{% url 'apartment_list' %}">APARTMENTS</a>
+                <a href="{% url 'jet_list' %}">PRIVATE JETS</a>
+                <a href="{% url 'hotel_list' %}">HOTELS</a>
+                <a href="{% url 'partner_with_us' %}">PARTNER WITH US</a>
             </div>
         </div>
     </header>
@@ -60,6 +104,12 @@
                 {% endfor %}
             </div>
             {% endif %}
+            <div class="hero-bg-collage">
+                <div class="collage-item item-apartment"></div>
+                <div class="collage-item item-car"></div>
+                <div class="collage-item item-boat"></div>
+                <div class="collage-item item-jet"></div>
+            </div>
             <div class="hero-content">
                 <div class="hero-text">
                     <h1>Journey to Extraordinary</h1>
@@ -76,7 +126,16 @@
                         {% csrf_token %}
                         <input type="text" name="username" placeholder="USERNAME" required>
                         <input type="password" name="password" placeholder="PASSWORD" required>
-                        <button type="submit">LOGIN / REGISTER</button>
+                        <button type="submit" style="margin-bottom: 1rem;">LOGIN</button>
+                        <div
+                            style="text-align: center; margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">Don't have
+                                an account yet?</p>
+                            <a href="{% url 'register' %}" class="btn-outline"
+                                style="display: block; width: 100%; text-align: center; padding: 0.8rem; text-decoration: none; border-color: var(--accent-gold); color: black;">
+                                CREATE AN ACCOUNT
+                            </a>
+                        </div>
                     </form>
                     {% endif %}
                 </div>
@@ -94,20 +153,14 @@
                         style="background-image: url('{% static 'landing/images/' %}{{ car.name|slugify }}.png');">
                     </div>
                     <div class="item-info">
-                        <span class="price">${{ car.price_per_day|floatformat:0 }}/DAY</span>
+                        <span class="price">₦{{ car.price_per_day|floatformat:0 }}/DAY</span>
                         <span class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i
                                 class="fas fa-star"></i> {{ car.rating }}</span>
                     </div>
-                    <div class="item-booking" style="padding: 0 1rem 1rem; display: flex; gap: 0.5rem;">
+                    <div class="item-booking" style="padding: 0 1rem 1rem; display: flex; justify-content: center;">
                         <a href="{% url 'item_detail' car.id %}" class="btn-outline"
-                            style="flex: 1; text-align: center; font-size: 0.8rem; padding: 0.5rem; border-radius: 4px;">MORE
+                            style="width: 100%; text-align: center; font-size: 0.8rem; padding: 0.5rem; border-radius: 4px;">MORE
                             DETAILS</a>
-                        <form method="POST" action="{% url 'book_item' car.id %}" style="flex: 1;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn-fill"
-                                style="width: 100%; border-radius: 4px; padding: 0.5rem; font-size: 0.8rem;">BOOK
-                                NOW</button>
-                        </form>
                     </div>
                 </div>
                 {% empty %}
@@ -115,15 +168,17 @@
                     <div class="preview-placeholder">NO CARS AVAILABLE</div>
                 </div>
                 {% endfor %}
-                <div class="item-card">
-                    <div class="preview-placeholder">CLICK TO PREVIEW</div>
-                </div>
-                <!-- ... additional placeholders ... -->
             </div>
             <div class="action-bar">
-                <a href="#" class="btn-outline">SEE MORE</a>
-                <a href="#" class="btn-fill">VIEW ALL CARS <i class="fas fa-arrow-right"
-                        style="margin-left: 1rem;"></i></a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'car_list' %}" class="btn-fill">
+                    VIEW ALL CARS <i class="fas fa-arrow-right" style="margin-left: 1rem;"></i>
+                </a>
+                {% else %}
+                <a href="#" class="btn-fill" onclick="alert('Please log in to view all cars'); return false;">
+                    VIEW ALL CARS <i class="fas fa-arrow-right" style="margin-left: 1rem;"></i>
+                </a>
+                {% endif %}
             </div>
         </section>
 
@@ -138,16 +193,14 @@
                         style="background-image: url('{% static 'landing/images/' %}{{ apt.name|slugify }}.png');">
                     </div>
                     <div class="item-info">
-                        <span class="price">${{ apt.price_per_day|floatformat:0 }}/DAY</span>
+                        <span class="price">₦{{ apt.price_per_day|floatformat:0 }}/DAY</span>
                         <span class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i
                                 class="fas fa-star"></i> {{ apt.rating }}</span>
                     </div>
-                    <div class="item-booking" style="padding: 0 1rem 1rem;">
-                        <form method="POST" action="{% url 'book_item' apt.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn-fill"
-                                style="width: 100%; border-radius: 4px; padding: 0.5rem;">BOOK NOW</button>
-                        </form>
+                    <div class="item-booking" style="padding: 0 1rem 1rem; display: flex; justify-content: center;">
+                        <a href="{% url 'item_detail' apt.id %}" class="btn-outline"
+                            style="width: 100%; text-align: center; font-size: 0.8rem; padding: 0.5rem; border-radius: 4px;">MORE
+                            DETAILS</a>
                     </div>
                 </div>
                 {% empty %}
@@ -155,15 +208,13 @@
                     <div class="preview-placeholder">NO APARTMENTS AVAILABLE</div>
                 </div>
                 {% endfor %}
-                <div class="item-card">
-                    <div class="preview-placeholder">CLICK TO PREVIEW</div>
-                </div>
-                <div class="item-card">
-                    <div class="preview-placeholder">CLICK TO PREVIEW</div>
-                </div>
-                <div class="item-card">
-                    <div class="preview-placeholder">CLICK TO PREVIEW</div>
-                </div>
+            </div>
+            <div class="action-bar">
+                <a href="{% if user.is_authenticated %}{% url 'apartment_list' %}{% else %}#{% endif %}"
+                    class="btn-fill" {% if not user.is_authenticated %}
+                    onclick="alert('Please log in to view all apartments'); return false;" {% endif %}>
+                    VIEW ALL APARTMENTS <i class="fas fa-arrow-right" style="margin-left: 1rem;"></i>
+                </a>
             </div>
         </section>
 
@@ -176,15 +227,13 @@
                     <a href="#"><i class="fab fa-instagram"></i></a>
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
                     <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
                     <a href="#"><i class="fab fa-linkedin-in"></i></a>
                 </div>
                 <div class="footer-nav">
                     <a href="#">Legal</a>
                     <a href="#">Privacy</a>
                     <a href="#">Careers</a>
-                </div>
-                <div class="footer-login-bar">
-                    <input type="text" placeholder="Low / Register">
                 </div>
             </div>
         </div>

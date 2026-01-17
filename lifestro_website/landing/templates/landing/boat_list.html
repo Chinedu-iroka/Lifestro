@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFESTRO | Luxury Boat Rentals</title>
+    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="main-nav">
+                <a href="{% url 'index' %}" class="logo">HAVELLE BY LIFESTRO</a>
+                <ul class="nav-links">
+                    <li><a href="{% url 'boat_list' %}" style="color: var(--accent-gold);">Boats</a></li>
+                    <li><a href="{% url 'apartment_list' %}">Apartments</a></li>
+                    <li><a href="{% url 'jet_list' %}">Private Jets</a></li>
+                    <li><a href="{% url 'hotel_list' %}">Hotels</a></li>
+                    <li><a href="{% url 'car_list' %}">Cars</a></li>
+                    <li><a href="{% url 'about_us' %}">About Us</a></li>
+                    <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
+                    <li><a href="{% url 'partner_with_us' %}">Partner With Us</a></li>
+                    <li><a href="{% url 'register' %}" class="btn-outline"
+                            style="padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.8rem;">REGISTER</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <i class="far fa-heart"></i>
+                    <i class="far fa-user"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 4rem 0;">
+        <h1 style="color: white; margin-bottom: 2rem;">Luxury Boat Fleet</h1>
+        <div class="items-grid">
+            {% for boat in boats %}
+            <div class="item-card">
+                {% if boat.image %}
+                <div class="item-img"
+                    style="background-image: url('{{ boat.image.url }}'); height: 250px; background-size: cover; background-position: center;">
+                </div>
+                {% else %}
+                <div
+                    style="height: 250px; background: #222; display: flex; align-items: center; justify-content: center; color: #444;">
+                    <i class="fas fa-ship fa-3x"></i>
+                </div>
+                {% endif %}
+
+                <div class="item-details" style="padding: 1.5rem;">
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">{{ boat.name }}</h3>
+                    <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                        {{boat.description|truncatewords:20 }}</p>
+                </div>
+
+                <div class="item-info"
+                    style="padding: 0 1.5rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span class="price" style="color: white; font-weight: 700;">₦{{
+                        boat.price_per_day|floatformat:0}}/DAY</span>
+                    <span class="rating" style="color: var(--accent-gold);"><i class="fas fa-star"></i> {{
+                        boat.rating}}</span>
+                </div>
+
+                <div class="item-actions" style="padding: 0 1.5rem 1.5rem; display: flex; gap: 0.5rem;">
+                    <a href="{% url 'item_detail' boat.id %}" class="btn-outline"
+                        style="flex: 1; text-align: center; font-size: 0.8rem; padding: 0.7rem; border-radius: 4px;">MORE
+                        DETAILS</a>
+                    <form method="POST" action="{% url 'book_item' boat.id %}" style="flex: 1;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-fill"
+                            style="width: 100%; border-radius: 4px; padding: 0.7rem; font-size: 0.8rem;">BOOK
+                            NOW</button>
+                    </form>
+                </div>
+            </div>
+            {% empty %}
+            <p style="color: white;">No boats available at the moment.</p>
+            {% endfor %}
+        </div>
+    </main>
+
+    <footer class="footer" style="padding: 2rem 0; background: #000; border-top: 1px solid #222; margin-top: 4rem;">
+        <div class="container text-center">
+            <p style="color: #666;">&copy; 2026 HAVELLE BY LIFESTRO. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
