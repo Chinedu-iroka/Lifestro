@@ -1,0 +1,11 @@
+{% if user.is_authenticated %}
+<div class="nav-icons">
+    <i class="far fa-heart" style="margin-right: 1rem;"></i>
+
+    <a href="{% url 'profile' %}" style="color: inherit; text-decoration: none;">
+        <i class="far fa-user" style="margin-right: 1rem;"></i>
+    </a>
+
+    <i class="fas fa-globe"></i>
+</div>
+{% endif %}

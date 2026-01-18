@@ -27,7 +27,7 @@
                     <li><a href="{% url 'register' %}" class="btn-outline"
                             style="padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.8rem;">REGISTER</a></li>
                 </ul>
-                <div class="nav-icons">
+                <div class="nav-icons" style="margin-left: 1rem;">
                     <i class="far fa-heart"></i>
                     <i class="far fa-user"></i>
                 </div>
@@ -71,9 +71,18 @@
                         DETAILS</a>
                     <form method="POST" action="{% url 'book_item' hotel.id %}" style="flex: 1;">
                         {% csrf_token %}
+                        {% if user.is_authenticated %}
                         <button type="submit" class="btn-fill"
-                            style="width: 100%; border-radius: 4px; padding: 0.7rem; font-size: 0.8rem;">BOOK
-                            STAY</button>
+                            style="width: 100%; border-radius: 4px; padding: 0.7rem; font-size: 0.8rem;">
+                            BOOK NOW
+                        </button>
+                        {% else %}
+                        <button type="button" class="btn-fill"
+                            onclick="alert('You must be logged in to book an item.');"
+                            style="width: 100%; border-radius: 4px; padding: 0.7rem; font-size: 0.8rem; opacity: 0.7;">
+                            BOOK NOW
+                        </button>
+                        {% endif %}
                     </form>
                 </div>
             </div>

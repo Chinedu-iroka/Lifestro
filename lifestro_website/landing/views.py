@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import RentalItem, Category, UserProfile, Booking
 from .forms import ExtendedRegistrationForm
@@ -213,4 +214,16 @@ def partners_list(request):
     return render(request, 'landing/partners_list.html', {
         'corporate_partners': corporate_partners,
         'luxury_brands': luxury_brands
+    })
+
+
+@login_required
+def profile_view(request):
+    profile_info, created = UserProfile.objects.get_or_create(user=request.user)
+    user_bookings = Booking.objects.filter(user=request.user).order_by('-start_date')
+    
+    return render(request, 'landing/profile.html', {
+        'bookings': user_bookings,
+        'profile': profile_info,
+        'today': timezone.now().date() # Add this line
     })
