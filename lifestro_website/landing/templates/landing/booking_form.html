@@ -134,7 +134,7 @@
             padding: 1rem;
             border-radius: 4px;
             border: 1px solid #333;
-            margin-top: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .duration-row {
@@ -203,7 +203,7 @@
                             </div>
                             <div style="display: flex; justify-content: space-between;">
                                 <span>Phone:</span>
-                                <span style="color: white;">{{ request.user.profile.phone_number }}</span>
+                                <span style="color: white;">{% if request.user.profile.phone_number %}{{request.user.profile.phone_number }}{% else %}Not provided{% endif %}</span>
                             </div>
                             <div style="display: flex; justify-content: space-between;">
                                 <span>Email:</span>
@@ -211,7 +211,7 @@
                             </div>
                             <div style="display: flex; justify-content: space-between;">
                                 <span>Home Address:</span>
-                                <span style="color: white;">{{ request.user.profile.address }}</span>
+                                <span style="color: white;">{% if request.user.profile.address %}{{request.user.profile.address }}{% else %}Not provided{% endif %}</span>
                             </div>
                         </div>
                     </div>
@@ -220,13 +220,24 @@
                         {% csrf_token %}
 
                         <!-- Dates Section -->
+                        <!-- Dates Section -->
                         <div>
                             <label class="form-label">{% if item.category.slug == 'apartments' %}Check-in Date{% else%}Pick-up Date{% endif %}</label>
                             {{ form.start_date }}
                         </div>
 
-                        <div id="endDateWrapper" class="{% if item.category.slug != 'apartments' %}hidden{% endif %}">
-                            <label class="form-label">{% if item.category.slug == 'apartments' %}Check-out Date{% else%}Return Date{% endif %}</label>
+                        <!-- FIXED: Removed the hidden class for apartments -->
+                        <div id="endDateWrapper"
+                            {% if item.category.slug != 'apartments' %}
+                                class="hidden"
+                            {% endif %}>
+                            <label class="form-label">
+                                {% if item.category.slug == 'apartments' %}
+                                    Check-out Date
+                                {% else %}
+                                    Return Date
+                                {% endif %}
+                            </label>
                             {{ form.end_date }}
                         </div>
 
@@ -237,31 +248,35 @@
                             <div class="hidden">
                                 {{ form.duration_type }}
                             </div>
+
+                            <!-- Duration Calculation Display -->
+                            <div id="apartmentDurationDisplay" class="duration-display">
+                                <div class="duration-row">
+                                    <span style="color: #aaa;">Nights:</span>
+                                    <span id="nightsCount"
+                                        style="color: var(--accent-gold); font-weight: bold;">0</span>
+                                </div>
+                                <div class="duration-row">
+                                    <span style="color: #aaa;">Price per Night:</span>
+                                    <span style="color: white; font-weight: bold;">₦{{ item.price_per_day|floatformat:0}}</span>
+                                </div>
+                                <div class="duration-row">
+                                    <span style="color: #aaa;">Total Cost:</span>
+                                    <span id="totalCost" style="color: white; font-weight: bold;">₦0</span>
+                                </div>
+                            </div>
+
                             <div class="info-note">Standard Nightly Rate</div>
 
                             <!-- Apartment-specific fields -->
                             <div id="apartmentDetails" style="margin-bottom: 1.5rem;">
-                                <!-- Stay Duration Display -->
-                                <div id="stayDurationDisplay" class="duration-display" style="margin-bottom: 1.5rem;">
-                                    <div class="duration-row">
-                                        <span style="color: #aaa;">Nights:</span>
-                                        <span id="nightsCount"
-                                            style="color: var(--accent-gold); font-weight: bold;">0</span>
-                                    </div>
-                                    <div class="duration-row">
-                                        <span style="color: #aaa;">Total Cost:</span>
-                                        <span id="totalCost" style="color: white; font-weight: bold;">₦0</span>
-                                    </div>
-                                </div>
-
                                 <!-- Number of Guests -->
                                 <div style="margin-bottom: 1rem;">
                                     <label class="form-label">Number of Guests</label>
                                     <select name="number_of_guests" class="form-input" required>
                                         <option value="">Select number of guests</option>
                                         {% for i in "x"|rjust:"50" %}
-                                        <option value="{{ forloop.counter }}">{{ forloop.counter }} guest{{
-                                            forloop.counter|pluralize }}</option>
+                                        <option value="{{ forloop.counter }}">{{ forloop.counter }} guest{{forloop.counter|pluralize }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -338,6 +353,8 @@
         const totalCost = document.getElementById('totalCost');
         const apartmentPrice = {{ item.price_per_day }};
 
+        console.log('Apartment Price:', apartmentPrice);
+
         // Date Picker Init
         flatpickr(startDateInput, {
             minDate: "today",
@@ -345,25 +362,38 @@
             dateFormat: "Y-m-d",
             theme: "dark",
             onChange: function (selectedDates, dateStr, instance) {
-                if (endDateInput._flatpickr) {
+                if (endDateInput && endDateInput._flatpickr) {
                     endDateInput._flatpickr.set('minDate', dateStr);
                 }
                 calculateStayDuration();
             }
         });
 
-        flatpickr(endDateInput, {
-            minDate: "today",
-            disable: blockedDates,
-            dateFormat: "Y-m-d",
-            theme: "dark",
-            onChange: function () {
-                calculateStayDuration();
-            }
-        });
+        if (endDateInput) {
+            flatpickr(endDateInput, {
+                minDate: "today",
+                disable: blockedDates,
+                dateFormat: "Y-m-d",
+                theme: "dark",
+                onChange: function () {
+                    calculateStayDuration();
+                }
+            });
+        }
 
         // Handle Duration Change
         function handleDurationChange() {
+            // First check if there's a hidden input with value 'custom' (for apartments)
+            const hiddenDuration = document.querySelector('input[name="duration_type"][type="hidden"]');
+            if (hiddenDuration && hiddenDuration.value === 'custom') {
+                if (endDateWrapper) endDateWrapper.classList.remove('hidden');
+                if (endDateInput) endDateInput.required = true;
+                calculateStayDuration();
+                return;
+            }
+
+            if (!durationRadios.length) return;
+
             // Find checked radio
             let selected = 'airport'; // default
             durationRadios.forEach(r => {
@@ -371,22 +401,24 @@
             });
 
             if (selected === 'custom') {
-                endDateWrapper.classList.remove('hidden');
-                endDateInput.required = true;
+                if (endDateWrapper) endDateWrapper.classList.remove('hidden');
+                if (endDateInput) endDateInput.required = true;
             } else {
-                endDateWrapper.classList.add('hidden');
-                endDateInput.required = false;
-                endDateInput.value = ''; // Clear end date
+                if (endDateWrapper) endDateWrapper.classList.add('hidden');
+                if (endDateInput) {
+                    endDateInput.required = false;
+                    endDateInput.value = ''; // Clear end date
+                }
             }
             calculateStayDuration();
         }
 
         // Calculate Stay Duration for Apartments
         function calculateStayDuration() {
-            if (!nightsCount || !totalCost) return;
+            if (!nightsCount || !totalCost || !apartmentPrice) return;
 
-            const startDate = startDateInput.value;
-            const endDate = endDateInput.value;
+            const startDate = startDateInput ? startDateInput.value : '';
+            const endDate = endDateInput ? endDateInput.value : '';
 
             if (startDate && endDate) {
                 const start = new Date(startDate);
@@ -408,9 +440,11 @@
             }
         }
 
-        durationRadios.forEach(radio => {
-            radio.addEventListener('change', handleDurationChange);
-        });
+        if (durationRadios.length) {
+            durationRadios.forEach(radio => {
+                radio.addEventListener('change', handleDurationChange);
+            });
+        }
 
         // Initial calculations
         handleDurationChange();
