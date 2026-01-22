@@ -1,6 +1,6 @@
 from django import core, forms
 from django.contrib.auth.models import User
-from .models import UserProfile
+from .models import UserProfile, Booking
 
 class ExtendedRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
@@ -76,3 +76,46 @@ class ContactForm(forms.Form):
         'class': 'auth-input',
         'rows': 5
     }))
+
+class BookingForm(forms.ModelForm):
+    DURATION_CHOICES = [
+        ('airport', 'Airport Drop-off'),
+        ('6h', '6 Hours'),
+        ('12h', '12 Hours'),
+        ('custom', 'Custom'),
+    ]
+    
+    duration_type = forms.ChoiceField(choices=DURATION_CHOICES, widget=forms.RadioSelect(attrs={'class': 'duration-select'}))
+    pickup_location = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Enter pickup location'}))
+    destination = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Enter destination'}))
+    start_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-input'}))
+    end_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-input'})) # Optional, only for custom
+
+    def __init__(self, *args, **kwargs):
+        self.item = kwargs.pop('item', None)
+        super(BookingForm, self).__init__(*args, **kwargs)
+        
+        if self.item and self.item.category.slug == 'apartments':
+            # Hide/Disable unnecessary fields for apartments
+            self.fields['duration_type'].choices = [('custom', 'Custom')]
+            self.fields['duration_type'].initial = 'custom'
+            self.fields['duration_type'].widget = forms.HiddenInput()
+            
+            # Make sure location fields are not required
+            self.fields['pickup_location'].widget = forms.HiddenInput()
+            self.fields['destination'].widget = forms.HiddenInput()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        pickup = cleaned_data.get('pickup_location')
+        dest = cleaned_data.get('destination')
+        
+        if self.item and self.item.category.slug != 'apartments':
+            # For non-apartments (like cars), these might be required or default
+            pass # Validation logic if needed 
+            
+        return cleaned_data
+
+    class Meta:
+        model = Booking
+        fields = ['duration_type', 'pickup_location', 'destination', 'start_date', 'end_date']

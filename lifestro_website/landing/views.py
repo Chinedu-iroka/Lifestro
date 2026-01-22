@@ -39,7 +39,7 @@ def hotel_list(request):
 def about_us(request):
     return render(request, 'landing/about_us.html')
 
-from .forms import ExtendedRegistrationForm, ContactForm
+from .forms import ExtendedRegistrationForm, ContactForm, BookingForm
 
 def contact_us(request):
     if request.method == 'POST':
@@ -151,21 +151,52 @@ def book_item(request, item_id):
         messages.warning(request, "Please login to book an item.")
         return redirect('index')
     
+    item = get_object_or_404(RentalItem, pk=item_id)
+    
     if request.method == 'POST':
-        item = RentalItem.objects.get(id=item_id)
-        # For simplicity in this MVP, we book for today + 1 day
-        start_date = timezone.now().date()
-        end_date = start_date + datetime.timedelta(days=1)
+        form = BookingForm(request.POST, item=item)
+        if form.is_valid():
+            booking = form.save(commit=False)
+            booking.user = request.user
+            booking.item = item
+            
+            # Ensure end_date is set for apartments/custom duration
+            if not booking.end_date and booking.duration_type == 'custom':
+                 # Fallback/Error if somehow custom is selected but no end date
+                 pass
+
+            # Additional validation for dates
+            if Booking.objects.filter(item=item, start_date__lte=booking.end_date, end_date__gte=booking.start_date).exists():
+                 messages.error(request, "This item is already booked for the selected dates.")
+                 return render(request, 'landing/booking_form.html', {'form': form, 'item': item})
+
+            booking.save()
+            messages.success(request, f"Successfully booked {item.name}!")
+            return redirect('profile')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        # Pre-fill address if available
+        initial_data = {}
+        if hasattr(request.user, 'profile'):
+             initial_data['pickup_location'] = request.user.profile.address
+             
+        form = BookingForm(initial=initial_data, item=item)
         
-        Booking.objects.create(
-            user=request.user,
-            item=item,
-            start_date=start_date,
-            end_date=end_date
-        )
-        messages.success(request, f"Successfully booked {item.name}!")
-        
-    return redirect('index')
+    # Get booked dates for this item to disable in calendar
+    booked_dates = Booking.objects.filter(item=item, end_date__gte=timezone.now().date()).values_list('start_date', 'end_date')
+    blocked_dates = []
+    for start, end in booked_dates:
+        curr = start
+        while curr <= end:
+            blocked_dates.append(curr.strftime("%Y-%m-%d"))
+            curr += datetime.timedelta(days=1)
+            
+    return render(request, 'landing/booking_form.html', {
+        'form': form, 
+        'item': item,
+        'blocked_dates': blocked_dates
+    })
 
 def team_list(request):
     team_members = [

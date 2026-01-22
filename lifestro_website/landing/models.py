@@ -35,6 +35,15 @@ class RentalImage(models.Model):
 class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     item = models.ForeignKey(RentalItem, on_delete=models.CASCADE)
+    pickup_location = models.CharField(max_length=255, blank=True, null=True)
+    destination = models.CharField(max_length=255, blank=True, null=True)
+    DURATION_CHOICES = [
+        ('airport', 'Airport Drop-off'),
+        ('6h', '6 Hours'),
+        ('12h', '12 Hours'),
+        ('custom', 'Custom'),
+    ]
+    duration_type = models.CharField(max_length=20, choices=DURATION_CHOICES, default='airport')
     start_date = models.DateField()
     end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
