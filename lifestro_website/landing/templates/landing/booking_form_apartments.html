@@ -8,7 +8,6 @@
     <title>Book {{ item.name }} | HAVELLE BY LIFESTRO</title>
     <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
 
@@ -171,10 +170,11 @@
 
     <main class="booking-container">
         <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
-            <h1 style="color: var(--accent-gold); text-align: center; margin-bottom: 2rem;">Complete Your Booking</h1>
+            <h1 style="color: var(--accent-gold); text-align: center; margin-bottom: 2rem;">Complete Your Apartment
+                Booking
+            </h1>
 
             <div class="booking-grid">
-                <!-- Car Details -->
                 <div class="car-details">
                     {% if item.image %}
                     <img src="{{ item.image.url }}" alt="{{ item.name }}"
@@ -187,13 +187,11 @@
                     {% endif %}
                     <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">{{ item.name }}</h2>
                     <div style="color: var(--accent-gold); font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">
-                        ₦{{ item.price_per_day|floatformat:0 }}/day</div>
+                        ₦{{ item.price_per_day|floatformat:0 }}/night</div>
                     <p style="color: #aaa; line-height: 1.6;">{{ item.description }}</p>
                 </div>
 
-                <!-- Booking Form -->
                 <div class="booking-form-wrapper">
-                    <!-- User Details (Read Only) -->
                     <div style="border-bottom: 1px solid #333; padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
                         <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: #ddd;">Your Details</h3>
                         <div style="display: grid; gap: 0.5rem; color: #aaa;">
@@ -203,85 +201,71 @@
                             </div>
                             <div style="display: flex; justify-content: space-between;">
                                 <span>Phone:</span>
-                                <span style="color: white;">{% if request.user.profile.phone_number %}{{request.user.profile.phone_number }}{% else %}Not provided{% endif %}</span>
+                                <span style="color: white;">{% if request.user.profile.phone_number%}{{request.user.profile.phone_number }} {% else %}Not provided{% endif %}</span>
                             </div>
                             <div style="display: flex; justify-content: space-between;">
                                 <span>Email:</span>
                                 <span style="color: white;">{{ request.user.email }}</span>
                             </div>
                             <div style="display: flex; justify-content: space-between;">
-                                <span>Home Address:</span>
-                                <span style="color: white;">{% if request.user.profile.address %}{{request.user.profile.address }}{% else %}Not provided{% endif %}</span>
+                                <span>Address:</span>
+                                <span style="color: white;">{% if request.user.profile.address %} {{request.user.profile.address }} {% else %}Not provided{% endif %}</span>
                             </div>
                         </div>
                     </div>
 
-                    <form method="post" id="bookingForm">
+                    <form method="post" id="bookingForm" action="{% url 'book_item' item.id %}">
                         {% csrf_token %}
 
-                        <!-- Dates Section -->
-                        <!-- Dates Section -->
+                        <!-- Hidden duration type for apartment logic backend compatibility -->
+                        <input type="hidden" name="duration_type" value="custom">
+
                         <div>
-                            <label class="form-label">{% if item.category.slug == 'apartments' %}Check-in Date{% else%}Pick-up Date{% endif %}</label>
+                            <label class="form-label">Check-in Date</label>
                             {{ form.start_date }}
                         </div>
 
-                        <!-- FIXED: Removed the hidden class for apartments -->
                         <div id="endDateWrapper"
-                            {% if item.category.slug != 'apartments' %}
-                                class="hidden"
-                            {% endif %}>
-                            <label class="form-label">
-                                {% if item.category.slug == 'apartments' %}
-                                    Check-out Date
-                                {% else %}
-                                    Return Date
-                                {% endif %}
-                            </label>
+                            style="border: 2px solid rgb(0, 0, 0); padding: 10px; margin-top: 1rem;">
+                            <label class="form-label">Check-out Date</label>
                             {{ form.end_date }}
                         </div>
 
-                        <!-- Duration Selection -->
-                        <div>
-                            <label class="form-label">Duration</label>
-                            {% if item.category.slug == 'apartments' %}
-                            <div class="hidden">
-                                {{ form.duration_type }}
-                            </div>
-
-                            <!-- Duration Calculation Display -->
+                        <div style="margin-top: 1.5rem;">
+                            <label class="form-label">Duration & Cost</label>
                             <div id="apartmentDurationDisplay" class="duration-display">
-                                <div class="duration-row">
+                                 <input type="hidden" id="rawPrice" value="{{ item.price_per_day|default:0 }}">
+
+                                <div class="duration-row" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                                     <span style="color: #aaa;">Nights:</span>
-                                    <span id="nightsCount"
-                                        style="color: var(--accent-gold); font-weight: bold;">0</span>
+                                    <span id="nightsCount" style="color: var(--accent-gold); font-weight: bold;">0</span>
                                 </div>
-                                <div class="duration-row">
+
+                                <div class="duration-row" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                                     <span style="color: #aaa;">Price per Night:</span>
-                                    <span style="color: white; font-weight: bold;">₦{{ item.price_per_day|floatformat:0}}</span>
+                                    <span style="color: white; font-weight: bold;">₦{{ item.price_per_day|floatformat:0 }}</span>
                                 </div>
-                                <div class="duration-row">
+
+                                <div class="duration-row" style="display: flex; justify-content: space-between; border-top: 1px solid #333; pt-2; margin-top: 0.5rem; padding-top: 0.5rem;">
                                     <span style="color: #aaa;">Total Cost:</span>
-                                    <span id="totalCost" style="color: white; font-weight: bold;">₦0</span>
+                                    <span id="totalCost" style="color: white; font-weight: bold; font-size: 1.2rem;">₦0</span>
                                 </div>
                             </div>
 
                             <div class="info-note">Standard Nightly Rate</div>
 
-                            <!-- Apartment-specific fields -->
                             <div id="apartmentDetails" style="margin-bottom: 1.5rem;">
-                                <!-- Number of Guests -->
                                 <div style="margin-bottom: 1rem;">
                                     <label class="form-label">Number of Guests</label>
                                     <select name="number_of_guests" class="form-input" required>
                                         <option value="">Select number of guests</option>
                                         {% for i in "x"|rjust:"50" %}
-                                        <option value="{{ forloop.counter }}">{{ forloop.counter }} guest{{forloop.counter|pluralize }}</option>
+                                        <option value="{{ forloop.counter }}">{{ forloop.counter }}
+                                            guest{{forloop.counter|pluralize }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
 
-                                <!-- Stay Type -->
                                 <div style="margin-bottom: 1rem;">
                                     <label class="form-label">Stay Type</label>
                                     <div class="stay-type-options">
@@ -299,30 +283,7 @@
                                     </p>
                                 </div>
                             </div>
-
-                            {% else %}
-                            <div class="mb-4">
-                                {{ form.duration_type }}
-                            </div>
-                            {% endif %}
                         </div>
-
-                        {% if item.category.slug != 'apartments' %}
-                        <!-- Pickup Location -->
-                        <div>
-                            <label class="form-label">Pickup Location</label>
-                            {{ form.pickup_location }}
-                            <p class="info-note">
-                                Default is your home address. Edit to change.
-                            </p>
-                        </div>
-
-                        <!-- Destination -->
-                        <div>
-                            <label class="form-label">Destination</label>
-                            {{ form.destination }}
-                        </div>
-                        {% endif %}
 
                         <button type="submit" class="btn-submit">
                             CONFIRM BOOKING
@@ -339,92 +300,42 @@
         </div>
     </footer>
 
-    <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const blockedDates = {{ blocked_dates| safe
-        }};
-        const durationRadios = document.querySelectorAll('input[name="duration_type"]');
-        const endDateWrapper = document.getElementById('endDateWrapper');
-        const endDateInput = document.getElementById('id_end_date');
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 1. Context Variables from Django
+        const blockedDates = {{ blocked_dates|safe }};
+        const apartmentPrice = parseFloat(document.getElementById('rawPrice').value) || 0;
+
+        // 2. DOM Elements
         const startDateInput = document.getElementById('id_start_date');
+        const endDateInput = document.getElementById('id_end_date');
         const nightsCount = document.getElementById('nightsCount');
         const totalCost = document.getElementById('totalCost');
-        const apartmentPrice = {{ item.price_per_day }};
 
         console.log('Apartment Price:', apartmentPrice);
 
-        // Date Picker Init
-        flatpickr(startDateInput, {
-            minDate: "today",
-            disable: blockedDates,
-            dateFormat: "Y-m-d",
-            theme: "dark",
-            onChange: function (selectedDates, dateStr, instance) {
-                if (endDateInput && endDateInput._flatpickr) {
-                    endDateInput._flatpickr.set('minDate', dateStr);
-                }
-                calculateStayDuration();
-            }
-        });
-
-        if (endDateInput) {
-            flatpickr(endDateInput, {
-                minDate: "today",
-                disable: blockedDates,
-                dateFormat: "Y-m-d",
-                theme: "dark",
-                onChange: function () {
-                    calculateStayDuration();
-                }
-            });
-        }
-
-        // Handle Duration Change
-        function handleDurationChange() {
-            // First check if there's a hidden input with value 'custom' (for apartments)
-            const hiddenDuration = document.querySelector('input[name="duration_type"][type="hidden"]');
-            if (hiddenDuration && hiddenDuration.value === 'custom') {
-                if (endDateWrapper) endDateWrapper.classList.remove('hidden');
-                if (endDateInput) endDateInput.required = true;
-                calculateStayDuration();
-                return;
-            }
-
-            if (!durationRadios.length) return;
-
-            // Find checked radio
-            let selected = 'airport'; // default
-            durationRadios.forEach(r => {
-                if (r.checked) selected = r.value;
-            });
-
-            if (selected === 'custom') {
-                if (endDateWrapper) endDateWrapper.classList.remove('hidden');
-                if (endDateInput) endDateInput.required = true;
-            } else {
-                if (endDateWrapper) endDateWrapper.classList.add('hidden');
-                if (endDateInput) {
-                    endDateInput.required = false;
-                    endDateInput.value = ''; // Clear end date
-                }
-            }
-            calculateStayDuration();
-        }
-
-        // Calculate Stay Duration for Apartments
+        /**
+         * Calculates the difference between two dates and updates the UI.
+         * Uses the Flatpickr instances directly for better reliability.
+         */
         function calculateStayDuration() {
-            if (!nightsCount || !totalCost || !apartmentPrice) return;
+            if (!nightsCount || !totalCost) return;
 
-            const startDate = startDateInput ? startDateInput.value : '';
-            const endDate = endDateInput ? endDateInput.value : '';
+            // Get the Flatpickr instances
+            const startFP = startDateInput._flatpickr;
+            const endFP = endDateInput._flatpickr;
 
-            if (startDate && endDate) {
-                const start = new Date(startDate);
-                const end = new Date(endDate);
+            // Only calculate if both pickers have a date selected
+            if (startFP.selectedDates.length > 0 && endFP.selectedDates.length > 0) {
+                const start = startFP.selectedDates[0];
+                const end = endFP.selectedDates[0];
+
+                // Calculate difference in milliseconds and convert to days
                 const timeDiff = end.getTime() - start.getTime();
                 const nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                console.log("Calculated nights:", nights);
 
                 if (nights > 0) {
                     nightsCount.textContent = nights;
@@ -440,17 +351,48 @@
             }
         }
 
-        if (durationRadios.length) {
-            durationRadios.forEach(radio => {
-                radio.addEventListener('change', handleDurationChange);
-            });
-        }
+        // 3. Flatpickr Configuration
+        const commonConfig = {
+            disable: blockedDates,
+            dateFormat: "Y-m-d",
+            theme: "dark",
+        };
 
-        // Initial calculations
-        handleDurationChange();
-        calculateStayDuration();
+        // Initialize Start Date Picker
+        const startFP = flatpickr(startDateInput, {
+            ...commonConfig,
+            minDate: "today",
+            onChange: function (selectedDates, dateStr) {
+                // When start date changes, set minDate of end date picker to match
+                if (endDateInput && endDateInput._flatpickr) {
+                    endDateInput._flatpickr.set('minDate', dateStr);
+                }
+                calculateStayDuration();
+            }
         });
-    </script>
+
+        // Initialize End Date Picker
+        const endFP = flatpickr(endDateInput, {
+            ...commonConfig,
+            minDate: "today",
+            onChange: function () {
+                calculateStayDuration();
+            }
+        });
+
+        // 4. Fallback Event Listeners
+        // Handles cases where dates might be entered manually or via browser autofill
+        [startDateInput, endDateInput].forEach(input => {
+            if (input) {
+                input.addEventListener('input', calculateStayDuration);
+                input.addEventListener('change', calculateStayDuration);
+            }
+        });
+
+        // 5. Initial Execution
+        calculateStayDuration();
+    });
+</script>
 </body>
 
 </html>

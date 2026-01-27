@@ -1,0 +1,340 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book {{ item.name }} | HAVELLE BY LIFESTRO</title>
+    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <style>
+        :root {
+            --accent-gold: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #000;
+            color: white;
+        }
+
+        .booking-container {
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .booking-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .booking-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: #111;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid #222;
+        }
+
+        .car-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .car-image-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            color: #aaa;
+        }
+
+        .car-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .car-price {
+            color: var(--accent-gold);
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .car-description {
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #ddd;
+        }
+
+        .user-details {
+            border-bottom: 1px solid #333;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: #aaa;
+        }
+
+        .detail-row span:last-child {
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-gold);
+            outline: none;
+        }
+
+        .info-note {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .duration-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .duration-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .duration-option input[type="radio"] {
+            accent-color: var(--accent-gold);
+        }
+
+        .duration-option label {
+            cursor: pointer;
+            color: #ddd;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--accent-gold);
+            color: black;
+            font-weight: bold;
+            padding: 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #e5a50a;
+        }
+
+        .page-title {
+            color: var(--accent-gold);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="main-nav">
+                <a href="{% url 'index' %}" class="logo">HAVELLE BY LIFESTRO</a>
+                <ul class="nav-links">
+                    <li><a href="{% url 'car_list' %}">Cars</a></li>
+                    <li><a href="{% url 'about_us' %}">About Us</a></li>
+                    <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <a href="{% url 'profile' %}" style="color: inherit;"><i class="far fa-user"></i></a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="booking-container">
+        <div class="container">
+            <h1 class="page-title">Complete Your Car Rental</h1>
+
+            <div class="booking-grid">
+                <!-- Car Details Section -->
+                <div class="card">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.name }}" class="car-image">
+                    {% else %}
+                    <div class="car-image-placeholder">No Image Available</div>
+                    {% endif %}
+                    
+                    <h2 class="car-title">{{ item.name }}</h2>
+                    <div class="car-price">₦{{ item.price_per_day|floatformat:0 }}/day</div>
+                    <p class="car-description">{{ item.description }}</p>
+                </div>
+
+                <!-- Booking Form Section -->
+                <div class="card">
+                    <div class="user-details">
+                        <h3 class="section-title">Your Details</h3>
+                        <div class="detail-row">
+                            <span>Full Name:</span>
+                            <span>{% firstof request.user.get_full_name request.user.username %}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Phone:</span>
+                            <span>{% if request.user.profile.phone_number %}{{ request.user.profile.phone_number }}{% else %}Not provided{% endif %}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Email:</span>
+                            <span>{{ request.user.email }}</span>
+                        </div>
+                    </div>
+
+                    <form method="post" id="bookingForm" action="{% url 'book_item' item.id %}">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label class="form-label">Pick-up Date</label>
+                            {{ form.start_date }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Drop-off Date</label>
+                            {{ form.end_date }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Duration Type</label>
+                            <div class="duration-options">
+                                {% for radio in form.duration_type %}
+                                {% if radio.data.value != 'custom' %}
+                                <div class="duration-option">
+                                    {{ radio.tag }}
+                                    <label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Pickup Location</label>
+                            {{ form.pickup_location }}
+                            <p class="info-note">Leave empty if picking up from your home address</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Destination</label>
+                            {{ form.destination }}
+                        </div>
+
+                        <button type="submit" class="btn-submit">CONFIRM BOOKING</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="padding: 2rem 0; background: #000; border-top: 1px solid #222;">
+        <div class="container">
+            <p style="color: #666; text-align: center;">&copy; 2026 HAVELLE BY LIFESTRO. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const blockedDates = {{ blocked_dates|safe }};
+            const startDateInput = document.getElementById('id_start_date');
+            const endDateInput = document.getElementById('id_end_date');
+
+            // Initialize date pickers
+            const startPicker = flatpickr(startDateInput, {
+                minDate: "today",
+                disable: blockedDates,
+                dateFormat: "Y-m-d",
+                theme: "dark",
+                onChange: function (selectedDates, dateStr) {
+                    // Update end date minimum to be after start date
+                    if (endDateInput._flatpickr) {
+                        endDateInput._flatpickr.set('minDate', dateStr);
+                    }
+                }
+            });
+
+            const endPicker = flatpickr(endDateInput, {
+                minDate: "today",
+                disable: blockedDates,
+                dateFormat: "Y-m-d",
+                theme: "dark"
+            });
+
+            // Add form-input class to Django form fields
+            if (startDateInput) startDateInput.classList.add('form-input');
+            if (endDateInput) endDateInput.classList.add('form-input');
+            
+            const pickupLocation = document.querySelector('input[name="pickup_location"], textarea[name="pickup_location"]');
+            const destination = document.querySelector('input[name="destination"], textarea[name="destination"]');
+            
+            if (pickupLocation) pickupLocation.classList.add('form-input');
+            if (destination) destination.classList.add('form-input');
+        });
+    </script>
+</body>
+
+</html>

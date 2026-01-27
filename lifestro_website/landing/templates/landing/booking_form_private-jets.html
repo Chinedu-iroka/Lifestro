@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<!-- Private Jets template -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book {{ item.name }} | HAVELLE BY LIFESTRO</title>
+    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <style>
+        .booking-container {
+            background-color: #000;
+            color: white;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .booking-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .booking-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .car-details,
+        .booking-form-wrapper {
+            background: #111;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid #222;
+        }
+
+        .form-input {
+            width: 100%;
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-gold);
+            outline: none;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #aaa;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--accent-gold);
+            color: black;
+            font-weight: bold;
+            padding: 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            background: #e5a50a;
+        }
+
+        .info-note {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="main-nav">
+                <a href="{% url 'index' %}" class="logo">HAVELLE BY LIFESTRO</a>
+                <ul class="nav-links">
+                    <li><a href="{% url 'jet_list' %}">Jets</a></li> <!-- Changed link -->
+                    <li><a href="{% url 'about_us' %}">About Us</a></li>
+                    <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <a href="{% url 'profile' %}" style="color: inherit;"><i class="far fa-user"></i></a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="booking-container">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+            <h1 style="color: var(--accent-gold); text-align: center; margin-bottom: 2rem;">Complete Your Private Jet
+                Booking</h1>
+
+            <div class="booking-grid">
+                <div class="car-details">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.name }}"
+                        style="width:100%; height:300px; object-fit:cover; border-radius:4px; margin-bottom:1rem;">
+                    {% else %}
+                    <div
+                        style="width:100%; height:300px; background-color:#333; display:flex; align-items:center; justify-content:center; border-radius:4px; margin-bottom:1rem; color:#aaa;">
+                        No Image Available</div>
+                    {% endif %}
+                    <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">{{ item.name }}</h2>
+                    <div style="color: var(--accent-gold); font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">
+                        ₦{{ item.price_per_day|floatformat:0 }}/day</div>
+                    <p style="color: #aaa; line-height: 1.6;">{{ item.description }}</p>
+                </div>
+
+                <div class="booking-form-wrapper">
+                    <div style="border-bottom: 1px solid #333; padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+                        <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: #ddd;">Your Details</h3>
+                        <div style="display: grid; gap: 0.5rem; color: #aaa;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Full Name:</span>
+                                <span style="color: white;">{% firstof request.user.get_full_name request.user.username
+                                    %}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Phone:</span>
+                                <span style="color: white;">{% if request.user.profile.phone_number %}{{
+                                    request.user.profile.phone_number }}{% else %}Not provided{% endif %}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Email:</span>
+                                <span style="color: white;">{{ request.user.email }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post" id="bookingForm" action="{% url 'book_item' item.id %}">
+                        {% csrf_token %}
+                        <div>
+                            <label class="form-label">Departure Date</label>
+                            {{ form.start_date }}
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Trip Type</label> <!-- Changed label -->
+                            {{ form.duration_type }}
+                        </div>
+                        <div id="endDateWrapper" class="hidden"
+                            style="border: 2px solid red; padding: 10px; margin-top: 1rem;">
+                            <label class="form-label">Return Date</label>
+                            {{ form.end_date }}
+                        </div>
+                        <div style="margin-top: 1.5rem;">
+                            <label class="form-label">Departure Airport</label>
+                            {{ form.pickup_location }}
+                        </div>
+                        <div>
+                            <label class="form-label">Arrival Airport</label>
+                            {{ form.destination }}
+                        </div>
+                        <button type="submit" class="btn-submit">CONFIRM BOOKING</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer" style="padding: 2rem 0; background: #000; border-top: 1px solid #222;">
+        <div class="container">
+            <p style="color: #666; text-align: center;">&copy; 2026 HAVELLE BY LIFESTRO. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const blockedDates = {{ blocked_dates| safe
+        }};
+        const durationRadios = document.querySelectorAll('input[name="duration_type"]');
+        const endDateWrapper = document.getElementById('endDateWrapper');
+        const endDateInput = document.getElementById('id_end_date');
+        const startDateInput = document.getElementById('id_start_date');
+
+        flatpickr(startDateInput, {
+            minDate: "today",
+            disable: blockedDates,
+            dateFormat: "Y-m-d",
+            theme: "dark",
+            onChange: function (selectedDates, dateStr, instance) {
+                if (endDateInput._flatpickr) {
+                    endDateInput._flatpickr.set('minDate', dateStr);
+                }
+            }
+        });
+        flatpickr(endDateInput, { minDate: "today", disable: blockedDates, dateFormat: "Y-m-d", theme: "dark" });
+
+        function handleDurationChange() {
+            let selected = 'airport';
+            durationRadios.forEach(r => { if (r.checked) selected = r.value; });
+            if (selected === 'custom') {
+                endDateWrapper.classList.remove('hidden');
+                endDateInput.required = true;
+            } else {
+                endDateWrapper.classList.add('hidden');
+                endDateInput.required = false;
+                endDateInput.value = '';
+            }
+        }
+        if (durationRadios.length) {
+            durationRadios.forEach(radio => { radio.addEventListener('change', handleDurationChange); });
+        }
+        handleDurationChange();
+        });
+    </script>
+</body>
+
+</html>
