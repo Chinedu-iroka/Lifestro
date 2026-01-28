@@ -90,7 +90,7 @@ def login_register_view(request):
                 request,
                 "Invalid login details. If you don’t have an account, please create one."
             )
-
+            return redirect('index')
         else:
             # Check if user already exists
             if User.objects.filter(username=username).exists():

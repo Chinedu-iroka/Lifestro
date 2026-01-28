@@ -9,18 +9,144 @@
     <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Inline Collage Styles to bypass cache */
+        /* RESPONSIVE IMPROVEMENTS */
+
+        /* Base responsive styles */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Container responsive */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Responsive */
+        .top-bar {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            gap: 0.5rem;
+        }
+
+        .top-bar .logo {
+            text-align: center;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        .social-icons {
+            position: relative;
+            right: auto;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Main Navigation - Mobile First */
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .main-nav .logo {
+            font-size: 1rem;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .nav-links {
+            display: none;
+            /* Hidden on mobile by default */
+            width: 100%;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .nav-links.active {
+            display: flex;
+        }
+
+        .nav-links li {
+            width: 100%;
+            text-align: center;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 0.5rem;
+        }
+
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: block;
+            background: none;
+            border: 1px solid var(--accent-gold, gold);
+            color: var(--accent-gold, gold);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Sub Navigation - Mobile Responsive */
+        .sub-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            padding: 0.5rem 0;
+        }
+
+        .sub-nav a {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        /* Hero Section Responsive */
         .hero {
             background: #000 !important;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .hero-bg-collage {
             position: absolute;
             inset: 0;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
+            grid-template-columns: 1fr;
+            grid-template-rows: repeat(4, 1fr);
             z-index: 0;
+            opacity: 0.4;
         }
 
         .collage-item {
@@ -37,7 +163,6 @@
             background-image: url('{% static "landing/images/sports-car.png" %}');
         }
 
-        /* Using villa as placeholder for boat */
         .item-boat {
             background-image: url('{% static "landing/images/ocean-view-villa.png" %}');
         }
@@ -45,16 +170,323 @@
         .item-jet {
             background-image: url('{% static "landing/images/hero.png" %}');
         }
+
+        /* Hero Content Responsive */
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem 1rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .hero-text h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            margin: 0;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1.5rem;
+            border-radius: 8px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .auth-card input {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .auth-card button,
+        .auth-card .btn-fill {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            position: relative;
+            z-index: 10;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Messages Responsive */
+        .messages {
+            position: absolute;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            border: 1px solid var(--accent-gold, gold);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* Grid Section Responsive */
+        .grid-section {
+            padding: 2rem 0;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .item-card {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .item-img {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .item-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .price {
+            font-size: 0.9rem;
+        }
+
+        .rating {
+            font-size: 0.9rem;
+        }
+
+        .item-booking {
+            padding: 0 1rem 1rem;
+        }
+
+        .item-booking a {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 0.6rem;
+            font-size: 0.85rem;
+        }
+
+        /* Action Bar Responsive */
+        .action-bar {
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .action-bar .btn-fill {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            font-size: 0.9rem;
+        }
+
+        /* Footer Responsive */
+        footer {
+            padding: 2rem 0;
+        }
+
+        .footer-top {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* TABLET STYLES (768px and up) */
+        @media (min-width: 768px) {
+            .container {
+                padding: 0 2rem;
+            }
+
+            .top-bar {
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .top-bar .logo {
+                font-size: 1rem;
+                width: auto;
+            }
+
+            .social-icons {
+                position: absolute;
+                right: 1rem;
+                gap: 1rem;
+            }
+
+            .main-nav .logo {
+                font-size: 1.2rem;
+            }
+
+            .mobile-menu-toggle {
+                display: none;
+            }
+
+            .nav-links {
+                display: flex;
+                width: auto;
+                flex-direction: row;
+                gap: 1.5rem;
+            }
+
+            .nav-links li {
+                width: auto;
+            }
+
+            .sub-nav a {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .hero-bg-collage {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .items-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .item-img {
+                height: 250px;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .footer-top {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        /* DESKTOP STYLES (1024px and up) */
+        @media (min-width: 1024px) {
+            .hero-content {
+                flex-direction: row;
+                justify-content: space-between;
+                gap: 3rem;
+            }
+
+            .hero-text {
+                flex: 1;
+                text-align: left;
+            }
+
+            .hero-text h1 {
+                font-size: 3rem;
+                text-align: left;
+            }
+
+            .auth-card {
+                flex-shrink: 0;
+            }
+
+            .items-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+            }
+
+            .item-img {
+                height: 280px;
+            }
+
+            .sub-nav {
+                justify-content: flex-start;
+            }
+        }
+
+        /* LARGE DESKTOP STYLES (1400px and up) */
+        @media (min-width: 1400px) {
+            .items-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .hero-text h1 {
+                font-size: 3.5rem;
+            }
+        }
+
+        /* Ensure images are responsive */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Touch-friendly buttons on mobile */
+        @media (max-width: 767px) {
+
+            button,
+            .btn-fill,
+            .btn-outline {
+                min-height: 44px;
+            }
+
+            .auth-card button {
+                width: 100%;
+                cursor: pointer;
+                -webkit-appearance: button;
+            }
+        }
     </style>
 </head>
 
 <body>
 
     <header>
-        <div class="top-bar"
-            style="position: relative; display: flex; justify-content: center; align-items: center; padding: 0 1rem;">
-            <span class="logo" style="text-align: center;">Journey to Extraordinary</span>
-            <div class="social-icons" style="position: absolute; right: 1rem; display: flex; gap: 1rem;">
+        <div class="top-bar">
+            <span class="logo">Journey to Extraordinary</span>
+            <div class="social-icons">
                 <a href="#"><i class="fab fa-instagram"></i></a>
                 <a href="#"><i class="fab fa-facebook-f"></i></a>
                 <a href="#"><i class="fab fa-twitter"></i></a>
@@ -63,11 +495,13 @@
                 <a href="#"><i class="fab fa-linkedin-in"></i></a>
             </div>
         </div>
-        </div>
         <div class="container">
             <nav class="main-nav">
                 <div class="logo">HAVELLE BY LIFESTRO</div>
-                <ul class="nav-links">
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i> MENU
+                </button>
+                <ul class="nav-links" id="navLinks">
                     <li><a href="{% url 'team_list' %}">Teams</a></li>
                     <li><a href="{% url 'partners_list' %}">PARTNERS</a></li>
                     <li><a href="{% url 'about_us' %}">About Us</a></li>
@@ -79,19 +513,16 @@
                 </ul>
                 {% if user.is_authenticated %}
                 <div class="nav-icons">
-                    <i class="far fa-heart" style="margin-right: 1rem;"></i>
-
+                    <i class="far fa-heart"></i>
                     <a href="{% url 'profile' %}" style="color: inherit; text-decoration: none;">
-                        <i class="far fa-user" style="margin-right: 1rem;"></i>
+                        <i class="far fa-user"></i>
                     </a>
-
                     <i class="fas fa-globe"></i>
                 </div>
                 {% endif %}
             </nav>
             <div class="sub-nav">
-                <a href="{% url 'car_list' %}"
-                    style="background: var(--accent-gold); color: #000; padding: 0.2rem 1rem;">CAR RENTALS</a>
+                <a href="{% url 'car_list' %}" style="background: var(--accent-gold); color: #000;">CAR RENTALS</a>
                 <a href="{% url 'boat_list' %}">BOATS</a>
                 <a href="{% url 'apartment_list' %}">APARTMENTS</a>
                 <a href="{% url 'jet_list' %}">PRIVATE JETS</a>
@@ -105,11 +536,9 @@
 
         <section class="hero">
             {% if messages %}
-            <div class="messages"
-                style="position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 1000; width: 80%; max-width: 600px;">
+            <div class="messages">
                 {% for message in messages %}
-                <div class="alert {{ message.tags }}"
-                    style="padding: 1rem; margin-bottom: 0.5rem; border-radius: 4px; background: rgba(0,0,0,0.8); color: white; border: 1px solid var(--accent-gold); text-align: center;">
+                <div class="alert {{ message.tags }}">
                     {{ message }}
                 </div>
                 {% endfor %}
@@ -168,10 +597,8 @@
                         <span class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i
                                 class="fas fa-star"></i> {{ car.rating }}</span>
                     </div>
-                    <div class="item-booking" style="padding: 0 1rem 1rem; display: flex; justify-content: center;">
-                        <a href="{% url 'item_detail' car.id %}" class="btn-outline"
-                            style="width: 100%; text-align: center; font-size: 0.8rem; padding: 0.5rem; border-radius: 4px;">MORE
-                            DETAILS</a>
+                    <div class="item-booking">
+                        <a href="{% url 'item_detail' car.id %}" class="btn-outline">MORE DETAILS</a>
                     </div>
                 </div>
                 {% empty %}
@@ -208,10 +635,8 @@
                         <span class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i
                                 class="fas fa-star"></i> {{ apt.rating }}</span>
                     </div>
-                    <div class="item-booking" style="padding: 0 1rem 1rem; display: flex; justify-content: center;">
-                        <a href="{% url 'item_detail' apt.id %}" class="btn-outline"
-                            style="width: 100%; text-align: center; font-size: 0.8rem; padding: 0.5rem; border-radius: 4px;">MORE
-                            DETAILS</a>
+                    <div class="item-booking">
+                        <a href="{% url 'item_detail' apt.id %}" class="btn-outline">MORE DETAILS</a>
                     </div>
                 </div>
                 {% empty %}
@@ -250,6 +675,31 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function (event) {
+            const navLinks = document.getElementById('navLinks');
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+
+            if (!navLinks.contains(event.target) && !menuToggle.contains(event.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Close mobile menu when window is resized to desktop
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 768) {
+                document.getElementById('navLinks').classList.remove('active');
+            }
+        });
+    </script>
 
 </body>
 
