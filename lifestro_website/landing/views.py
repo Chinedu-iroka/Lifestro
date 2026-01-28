@@ -180,8 +180,8 @@ def book_item(request, item_id):
             booking.save()
             messages.success(request, f"Successfully booked {item.name}!")
             return redirect('profile')
-        else:
-            messages.error(request, "Please correct the errors below.")
+        # else:
+            # messages.error(request, "Please correct the errors below.")
     else:
         # Pre-fill address if available
         initial_data = {}
