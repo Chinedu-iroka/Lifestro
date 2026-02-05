@@ -1,41 +1,9 @@
+{% extends 'landing/index.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIFESTRO | Our Partners</title>
-    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
+{% block title %}OUR PARTNERS | HAVELLE BY LIFESTRO{% endblock %}
 
-<body>
-
-    <header>
-        <div class="top-bar">
-            <span class="logo">Journey to Extraordinary</span>
-            <span class="follow">FOLLOW US</span>
-        </div>
-        <div class="container">
-            <nav class="main-nav">
-                <a href="{% url 'index' %}" class="logo">HAVELLE BY LIFESTRO</a>
-                <ul class="nav-links">
-                    <li><a href="{% url 'team_list' %}">Teams</a></li>
-                    <li><a href="{% url 'partners_list' %}" style="color: var(--accent-gold);">PARTNERS</a></li>
-                    <li><a href="{% url 'about_us' %}">About Us</a></li>
-                    <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
-                    <li><a href="{% url 'register' %}" class="btn-outline"
-                            style="padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.8rem;">REGISTER</a></li>
-                </ul>
-                <div class="nav-icons">
-                    <i class="far fa-heart" style="margin-right: 1rem;"></i>
-                    <i class="far fa-user" style="margin-right: 1rem;"></i>
-                    <i class="fas fa-globe"></i>
-                </div>
-            </nav>
-        </div>
-    </header>
+{% block content %}
 
     <main class="container" style="padding: 4rem 0;">
 
@@ -103,30 +71,5 @@
         </div>
 
     </main>
-
-    <footer>
-        <div class="container">
-            <div class="footer-top">
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-                <div class="footer-nav">
-                    <a href="#">Legal</a>
-                    <a href="#">Privacy</a>
-                    <a href="#">Careers</a>
-                </div>
-                <div class="footer-login-bar">
-                    <a href="{% url 'register' %}"
-                        style="color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 4px;">REGISTER
-                        NOW</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-</body>
-
-</html>
+{% endblock %}
+    

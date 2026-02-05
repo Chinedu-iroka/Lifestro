@@ -1,37 +1,9 @@
+{% extends 'landing/index.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIFESTRO | About Us</title>
-    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
+{% block title %}OUR PARTNERS | HAVELLE BY LIFESTRO{% endblock %}
 
-<body>
-    <header class="header">
-        <div class="container">
-            <nav class="main-nav">
-                <a href="{% url 'index' %}" class="logo">HAVELLE BY LIFESTRO</a>
-                <ul class="nav-links">
-                    <li><a href="{% url 'about_us' %}" style="color: var(--accent-gold);">About Us</a></li>
-                    <li><a href="{% url 'hotel_list' %}">Hotels</a></li>
-                    <li><a href="{% url 'jet_list' %}">Private Jets</a></li>
-                    <li><a href="{% url 'apartment_list' %}">Apartments</a></li>
-                    <li><a href="{% url 'boat_list' %}">Boats</a></li>
-                    <li><a href="{% url 'car_list' %}">Cars</a></li>
-                    <li><a href="{% url 'register' %}" class="btn-outline"
-                            style="padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.8rem;">REGISTER</a></li>
-                </ul>
-                <div class="nav-icons">
-                    <i class="far fa-heart"></i>
-                    <i class="far fa-user"></i>
-                </div>
-            </nav>
-        </div>
-    </header>
+{% block content %}
 
     <main class="container" style="padding: 4rem 0; min-height: 60vh;">
         <h1 style="color: white; margin-bottom: 2rem; text-align: center;">About Lifestro</h1>
@@ -53,11 +25,4 @@
         </div>
     </main>
 
-    <footer class="footer" style="padding: 2rem 0; background: #000; border-top: 1px solid #222; margin-top: 4rem;">
-        <div class="container text-center">
-            <p style="color: #666;">&copy; 2026 HAVELLE BY LIFESTRO. All rights reserved.</p>
-        </div>
-    </footer>
-</body>
-
-</html>
+    {% endblock %}

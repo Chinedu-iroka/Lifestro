@@ -1,204 +1,138 @@
+{% extends 'landing/index.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OUR TEAM | HAVELLE BY LIFESTRO</title>
-    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .page-header {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-            url('{% static "landing/images/hero.png" %}') center/cover;
-            padding: 8rem 2rem 4rem;
-            text-align: center;
-        }
+{% block title %}OUR TEAM | HAVELLE BY LIFESTRO{% endblock %}
 
-        .page-header h1 {
-            font-size: 3rem;
-            color: var(--accent-gold);
-            letter-spacing: 4px;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-        }
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+        url('{% static "landing/images/hero.png" %}') center/cover;
+        padding: 8rem 2rem 4rem;
+        text-align: center;
+    }
 
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 4rem 0;
-        }
+    .page-header h1 {
+        font-size: 3rem;
+        color: var(--accent-gold);
+        letter-spacing: 4px;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+    }
 
-        .team-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-            transition: var(--transition-smooth);
-            text-align: center;
-        }
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 4rem 0;
+    }
 
-        .team-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-gold);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
+    .team-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        overflow: hidden;
+        transition: var(--transition-smooth);
+        text-align: center;
+    }
 
-        .member-img {
-            height: 350px;
-            width: 100%;
-            background-size: cover;
-            background-position: center;
-            background-color: #2a2a2a;
-            /* Fallback */
-            position: relative;
-        }
+    .team-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-gold);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
 
-        .member-img::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-        }
+    .member-img {
+        height: 350px;
+        width: 100%;
+        background-size: cover;
+        background-position: center;
+        background-color: #2a2a2a;
+        position: relative;
+    }
 
-        .member-info {
-            padding: 2rem;
-        }
+    .member-img::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    }
 
-        .member-name {
-            color: white;
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            letter-spacing: 1px;
-            font-family: 'Outfit', sans-serif;
-        }
+    .member-info {
+        padding: 2rem;
+    }
 
-        .member-role {
-            color: var(--accent-gold);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
+    .member-name {
+        color: white;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        letter-spacing: 1px;
+        font-family: 'Outfit', sans-serif;
+    }
 
-        .member-bio {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
+    .member-role {
+        color: var(--accent-gold);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
 
-        .member-social {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
+    .member-bio {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
 
-        .member-social a {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            transition: color 0.3s ease;
-        }
+    .member-social {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
 
-        .member-social a:hover {
-            color: var(--accent-gold);
-        }
-    </style>
-</head>
+    .member-social a {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        transition: color 0.3s ease;
+    }
 
-<body>
+    .member-social a:hover {
+        color: var(--accent-gold);
+    }
+</style>
+{% endblock %}
 
-    <header>
-        <div class="top-bar">
-            <span class="logo">Journey to Extraordinary</span>
-            <span class="follow">FOLLOW US</span>
-        </div>
-        <div class="container">
-            <nav class="main-nav">
-                <a href="{% url 'index' %}" class="logo">HAVELLE BY LIFESTRO</a>
-                <ul class="nav-links">
-                    <li><a href="{% url 'team_list' %}" style="color: var(--accent-gold);">Teams</a></li>
-                    <li><a href="{% url 'about_us' %}">About Us</a></li>
-                    <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
-                    <li><a href="{% url 'register' %}" class="btn-outline"
-                            style="padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.8rem;">REGISTER</a></li>
-                </ul>
-                <div class="nav-icons">
-                    <i class="far fa-heart" style="margin-right: 1rem;"></i>
-                    <i class="far fa-user" style="margin-right: 1rem;"></i>
-                    <i class="fas fa-globe"></i>
-                </div>
-            </nav>
-            <div class="sub-nav">
-                <a href="{% url 'car_list' %}"
-                    style="background: var(--accent-gold); color: #000; padding: 0.2rem 1rem;">CAR RENTALS</a>
-                <a href="{% url 'boat_list' %}">BOATS</a>
-                <a href="{% url 'apartment_list' %}">APARTMENTS</a>
-                <a href="{% url 'jet_list' %}">PRIVATE JETS</a>
-                <a href="{% url 'hotel_list' %}">HOTELS</a>
-                <a href="{% url 'about_us' %}">ABOUT US</a>
-                <a href="{% url 'contact_us' %}">CONTACT US</a>
-                <a href="{% url 'partner_with_us' %}">PARTNER WITH US</a>
-            </div>
-        </div>
-    </header>
-
-    <div class="page-header">
-        <div class="container">
-            <h1>Meet The Team</h1>
-            <p style="color: var(--text-secondary); letter-spacing: 2px; max-width: 600px; margin: 0 auto;">VISIONARIES,
-                CREATORS, AND CURATORS OF THE EXTRAORDINARY</p>
-        </div>
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Meet The Team</h1>
+        <p style="color: var(--text-secondary); letter-spacing: 2px; max-width: 600px; margin: 0 auto;">
+            VISIONARIES, CREATORS, AND CURATORS OF THE EXTRAORDINARY
+        </p>
     </div>
+</div>
 
-    <main class="container">
-        <div class="team-grid">
-            {% for member in team_members %}
-            <div class="team-card">
-                <div class="member-img"
-                    style="background-image: url('{% static 'landing/images/' %}{{ member.image }}');"></div>
-                <div class="member-info">
-                    <div class="member-name">{{ member.name }}</div>
-                    <div class="member-role">{{ member.role }}</div>
-                    <div class="member-bio">{{ member.bio }}</div>
-                    <div class="member-social">
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fas fa-envelope"></i></a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </main>
-
-    <footer>
-        <div class="container">
-            <div class="footer-top">
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
+<main class="container">
+    <div class="team-grid">
+        {% for member in team_members %}
+        <div class="team-card">
+            <div class="member-img"
+                style="background-image: url('{% static 'landing/images/' %}{{ member.image }}');"></div>
+            <div class="member-info">
+                <div class="member-name">{{ member.name }}</div>
+                <div class="member-role">{{ member.role }}</div>
+                <div class="member-bio">{{ member.bio }}</div>
+                <div class="member-social">
                     <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-                <div class="footer-nav">
-                    <a href="#">Legal</a>
-                    <a href="#">Privacy</a>
-                    <a href="#">Careers</a>
-                </div>
-                <div class="footer-login-bar">
-                    <a href="{% url 'register' %}"
-                        style="color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 4px;">REGISTER
-                        NOW</a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
         </div>
-    </footer>
-
-</body>
-
-</html>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}
